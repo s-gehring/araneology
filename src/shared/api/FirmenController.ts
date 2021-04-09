@@ -7,6 +7,7 @@ export type FirmenControllerResponse = {
   totalcount: number;
 };
 
-export type FirmenControllerQueryParameters = {
+export type FirmenControllerSearchQueryParameters = {
   page: string;
+  query: string;
 };

@@ -13,6 +13,8 @@ import { DetailsComponent } from "./details/details.component";
 import { BackComponent } from "./back/back.component";
 import { PaginationComponent } from "./pagination/pagination.component";
 import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatInputModule } from "@angular/material/input";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { MatSidenavModule } from "@angular/material/sidenav";
     MatProgressSpinnerModule,
     HttpClientModule,
     MatSidenavModule,
+    MatInputModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

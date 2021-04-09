@@ -1,1 +1,0 @@
-select count(id) as cnt from Firmen

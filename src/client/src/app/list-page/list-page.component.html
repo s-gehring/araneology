@@ -1,7 +1,9 @@
 <main>
     <h2>Firmen</h2>
-    <ng-container *ngIf="firmenLoadingState === LoadingStates.FinishedLoading">
-
+    <ng-container *ngIf="isInitiallyLoaded(firmenLoadingState)">
+        <mat-form-field>
+            <input matInput [ngModel]="searchQuery" (ngModelChange)="searchQuery = $event; search()"/>
+        </mat-form-field>
         <ul>
             <li *ngFor="let firma of firmenPage.page">
                 <a [routerLink]="[firma.id]">{{firma.name}}</a>
@@ -9,6 +11,7 @@
         </ul>
         <app-pagination [totalPages]="firmenPage.totalPages" [currentPage]="firmenPage.currentPage"
                         (pageClicked)="navigateToPage($event)"></app-pagination>
+        <div>Showing {{firmenPage.page.length}}/{{firmenPage.totalCount}} Firmen.</div>
 
     </ng-container>
 

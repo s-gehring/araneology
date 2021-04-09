@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Firma, SimpleFirma } from "../../../../shared/Firma";
-import { map, tap } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { FirmenControllerResponse } from "../../../../shared/api/FirmenController";
 import { FirmenAdapter } from "./firmen.adapter";
 
@@ -18,11 +18,15 @@ export type Paged<T> = {
 export class FirmenService {
   constructor(private firmenAdapter: FirmenAdapter) {}
 
-  public getAllSimpleFirmenSorted(
-    page: number
+  public getAllSimpleFirmen(
+    page: number,
+    query: string
   ): Observable<Paged<SimpleFirma[]>> {
     return this.firmenAdapter
-      .getSimpleFirmenList({ page: page.toString() })
+      .getSimpleFirmenList({
+        page: page.toString(),
+        query,
+      })
       .pipe(
         map<FirmenControllerResponse, Paged<SimpleFirma[]>>((response) => {
           return {
@@ -31,9 +35,6 @@ export class FirmenService {
             totalCount: response.totalcount,
             page: response.firmen,
           };
-        }),
-        tap((result) => {
-          result.page.sort((a, b) => a.name.localeCompare(b.name));
         })
       );
   }

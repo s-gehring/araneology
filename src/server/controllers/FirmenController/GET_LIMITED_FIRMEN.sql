@@ -1,1 +1,1 @@
-select id, name from Firmen limit $limit offset $offset
+select id, name from Firmen order by name limit $limit offset $offset

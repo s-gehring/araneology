@@ -7,6 +7,7 @@ import {
   LoadingError,
   LoadingState,
   LoadingStates,
+  Reloading,
   StillLoading,
 } from "../../../../shared/LoadingStates";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -23,6 +24,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
   public LoadingStates = LoadingStates;
   public errorMessage: string | null = null;
   private subscriptions: Subscription[] = [];
+  searchQuery: string = "";
 
   constructor(
     private firmenService: FirmenService,
@@ -36,9 +38,9 @@ export class ListPageComponent implements OnInit, OnDestroy {
   }
 
   loadFirmen(page: number): void {
-    this.firmenLoadingState = StillLoading;
+    this.firmenLoadingState = Reloading;
     this.subscriptions.push(
-      this.firmenService.getAllSimpleFirmenSorted(page).subscribe(
+      this.firmenService.getAllSimpleFirmen(page, this.searchQuery).subscribe(
         (allFirmen) => {
           this.firmenPage = allFirmen;
           this.firmenLoadingState = FinishedLoading;
@@ -62,15 +64,42 @@ export class ListPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  private async getDesiredSearchQuery(): Promise<string> {
+    return new Promise((resolve) => {
+      this.activatedRoute.queryParams.subscribe((params) => {
+        if (!params["query"]) {
+          resolve("");
+        }
+        resolve(params["query"]);
+      });
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     const page: number = await this.getDesiredPageNumber();
+    this.searchQuery = await this.getDesiredSearchQuery();
     this.loadFirmen(page);
   }
 
   navigateToPage(pageNumber: number) {
     const url = new URL(window.location.href);
     url.searchParams.set("page", `${pageNumber + 1}`);
+    url.searchParams.set("query", `${this.searchQuery}`);
     window.history.pushState({}, `Firmen - Page ${pageNumber}`, url.toString());
     this.loadFirmen(pageNumber);
+  }
+
+  search(): void {
+    const url = new URL(window.location.href);
+    url.searchParams.set("page", `1`);
+    url.searchParams.set("query", `${this.searchQuery}`);
+    window.history.replaceState({}, `Firmen - Page 1`, url.toString());
+    this.loadFirmen(0);
+  }
+
+  isInitiallyLoaded(firmenLoadingState: LoadingState): boolean {
+    return (
+      firmenLoadingState === Reloading || firmenLoadingState === FinishedLoading
+    );
   }
 }

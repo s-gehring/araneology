@@ -4,7 +4,7 @@ import { SimpleFirma } from "../../../shared/Firma";
 import * as PROPERTIES from "../../../shared/properties.json";
 
 import { ServerException } from "../../ServerException";
-import { loadSqlFromFile, SQLResultRow } from "../../util/SqlHelper";
+import { loadSqlFromFile, SQL, SQLResultRow } from "../../util/SqlHelper";
 import { getQueryParameters, getRequiredParameter } from "../../util/UrlUtil";
 import { FirmenControllerResponse } from "../../../shared/api/FirmenController";
 
@@ -17,13 +17,20 @@ export class FirmenController implements Controller {
     __dirname,
     "GET_LIMITED_FIRMEN.sql"
   );
-  private SQL_COUNT_FIRMEN = loadSqlFromFile(__dirname, "COUNT_FIRMEN.sql");
+  private SQL_COUNT_FIRMEN_SEARCHING = loadSqlFromFile(
+    __dirname,
+    "COUNT_FIRMEN_SEARCHING.sql"
+  );
+  private SQL_GET_LIMITED_FIRMEN_SEARCHING = loadSqlFromFile(
+    __dirname,
+    "GET_LIMITED_FIRMEN_SEARCHING.sql"
+  );
 
-  private getCount(database: any): Promise<number> {
+  private getCount(database: any, query: string): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       database.get(
-        this.SQL_COUNT_FIRMEN,
-        [],
+        this.SQL_COUNT_FIRMEN_SEARCHING,
+        { $query: `%${query.trim()}%` },
         (error: any, row: SQLResultRow) => {
           if (error === null) {
             resolve(row.cnt);
@@ -40,22 +47,39 @@ export class FirmenController implements Controller {
     });
   }
 
-  private getFirmen(database: any, page: number): Promise<SimpleFirma[]> {
+  private prepareStatement(database: any, statement: SQL): any {
+    return database.prepare(statement, [], (error: any) => {
+      if (error !== null) {
+        console.error("Failed to prepare statement.", error);
+      }
+    });
+  }
+
+  private getFirmen(
+    database: any,
+    page: number,
+    search: string
+  ): Promise<SimpleFirma[]> {
     return new Promise<SimpleFirma[]>((resolve, reject) => {
-      const statement = database.prepare(
-        this.SQL_GET_LIMITED_FIRMEN,
-        [],
-        (error: any) => {
-          if (error !== null) {
-            console.error("Failed to prepare statement.", error);
-          }
-        }
+      const isSearching: boolean = search.trim().length > 0;
+      const statement = this.prepareStatement(
+        database,
+        isSearching
+          ? this.SQL_GET_LIMITED_FIRMEN_SEARCHING
+          : this.SQL_GET_LIMITED_FIRMEN
       );
 
-      const parameters = {
+      const parameters: {
+        $limit: number;
+        $offset: number;
+        $search?: string;
+      } = {
         $limit: SIZE_PER_PAGE,
         $offset: SIZE_PER_PAGE * page,
       };
+      if (isSearching) {
+        parameters["$search"] = "%" + search + "%";
+      }
 
       statement.all(parameters, (error: any, rows: Array<SQLResultRow>) => {
         if (error === null) {
@@ -91,9 +115,9 @@ export class FirmenController implements Controller {
     const page = Number(
       getRequiredParameter(getQueryParameters(request), "page")
     );
-
-    const resultingFirmen = await this.getFirmen(database, page);
-    const count = await this.getCount(database);
+    const search = getRequiredParameter(getQueryParameters(request), "query");
+    const resultingFirmen = await this.getFirmen(database, page, search);
+    const count = await this.getCount(database, search);
     database.close();
 
     return {

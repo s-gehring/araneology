@@ -3,8 +3,8 @@ import { Observable } from "rxjs";
 import * as PROPERTIES from "../../../../shared/properties.json";
 import { HttpClient } from "@angular/common/http";
 import {
-  FirmenControllerQueryParameters,
   FirmenControllerResponse,
+  FirmenControllerSearchQueryParameters,
 } from "../../../../shared/api/FirmenController";
 import { FirmenDetailsControllerResponse } from "../../../../shared/api/FirmenDetailController";
 
@@ -19,7 +19,7 @@ export class FirmenAdapter {
   constructor(private http: HttpClient) {}
 
   public getSimpleFirmenList(
-    params: FirmenControllerQueryParameters
+    params: FirmenControllerSearchQueryParameters
   ): Observable<FirmenControllerResponse> {
     return this.http.get<FirmenControllerResponse>(this.getAllFirmenPath, {
       params,

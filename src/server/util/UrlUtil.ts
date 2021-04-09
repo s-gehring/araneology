@@ -9,6 +9,13 @@ export function getQueryParameters(request: IncomingMessage): URLSearchParams {
   return parsedUrl.searchParams;
 }
 
+export function getOptionalParameter(
+  params: URLSearchParams,
+  key: string
+): string | null {
+  return params.get(key);
+}
+
 export function getRequiredParameter(
   params: URLSearchParams,
   key: string
