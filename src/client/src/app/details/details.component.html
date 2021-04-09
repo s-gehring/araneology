@@ -1,0 +1,24 @@
+<app-back></app-back>
+<mat-spinner *ngIf="currentLoadingState===LoadingStates.StillLoading"></mat-spinner>
+<app-error *ngIf="currentLoadingState===LoadingStates.LoadingError">{{loadingErrorMessage}}</app-error>
+<ng-container *ngIf="currentLoadingState === LoadingStates.FinishedLoading">
+    <div class="details">
+        <h2>{{ firma.name}} ({{firma.id }})</h2>
+        <h3>Firmendetails</h3>
+        Insolvenzbekanntmachungen:
+        <ul>
+            <li *ngFor="let inso of firma.insos">
+                <span class="date">[{{inso.datum | date:"dd.MM.yyyy" }}] </span>
+                <span class="url">{{inso.url}}</span>
+            </li>
+        </ul>
+        Handelsregisterbekanntmachungen:
+        <ul>
+            <li *ngFor="let hare of firma.haRes">
+                <span class="date">[{{hare.datum | date:"dd.MM.yyyy" }}] </span>
+                <span class="url">{{hare.url}}</span>
+            </li>
+        </ul>
+    </div>
+
+</ng-container>

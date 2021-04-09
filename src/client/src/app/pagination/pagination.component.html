@@ -1,0 +1,25 @@
+<div class="pagination">
+    <ng-container *ngIf="currentPage > 0">
+        <ng-container *ngIf="currentPage > 1">
+            <a (click)="go(0)">⇤</a>
+        </ng-container>
+        <a (click)="go(currentPage-1)">←</a>
+        <ng-container *ngIf="currentPage > 1">
+            <a (click)="go(currentPage-2)">{{showPageNumber(currentPage - 2)}}</a>
+        </ng-container>
+        <a (click)="go(currentPage-1)">{{showPageNumber(currentPage - 1)}}</a>
+    </ng-container>
+    <strong>{{showPageNumber(currentPage)}}</strong>
+
+    <ng-container *ngIf="currentPage < totalPages-1">
+        <a (click)="go(currentPage+1)">{{showPageNumber(currentPage + 1)}}</a>
+        <ng-container *ngIf="currentPage < totalPages -2">
+            <a (click)="go(currentPage+2)">{{showPageNumber(currentPage + 2)}}</a>
+        </ng-container>
+
+        <a (click)="go(currentPage+1)">→</a>
+        <ng-container *ngIf="currentPage < totalPages -2">
+            <a (click)="go(totalPages-1)">⇥</a>
+        </ng-container>
+    </ng-container>
+</div>

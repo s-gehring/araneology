@@ -1,0 +1,28 @@
+{
+  "name": "araneology",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.js",
+  "scripts": {
+    "server:start-dev": "nodemon",
+    "server:build": "rimraf ./build && tsc",
+    "server:start": "pnpm run build && node build/index.js",
+    "client:build": "cd src/client && ng build",
+    "client:start": "cd src/client && ng serve"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "sqlite3": "^5.0.2"
+  }
+}

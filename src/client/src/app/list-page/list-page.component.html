@@ -1,0 +1,24 @@
+<main>
+    <h2>Firmen</h2>
+    <ng-container *ngIf="firmenLoadingState === LoadingStates.FinishedLoading">
+
+        <ul>
+            <li *ngFor="let firma of firmenPage.page">
+                <a [routerLink]="[firma.id]">{{firma.name}}</a>
+            </li>
+        </ul>
+        <app-pagination [totalPages]="firmenPage.totalPages" [currentPage]="firmenPage.currentPage"
+                        (pageClicked)="navigateToPage($event)"></app-pagination>
+
+    </ng-container>
+
+    <ng-container *ngIf="firmenLoadingState === LoadingStates.StillLoading">
+        <mat-spinner></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="firmenLoadingState === LoadingStates.LoadingError">
+        <app-error>{{ errorMessage }}</app-error>
+    </ng-container>
+
+
+</main>

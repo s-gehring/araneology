@@ -1,0 +1,11 @@
+<mat-sidenav-container>
+    <mat-sidenav [position]="'end'" [disableClose]="true" [mode]="'side'" opened>
+        <img src="assets/cpider_logo.png"
+             alt="Cpider" id="logo"/>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <main>
+            <router-outlet></router-outlet>
+        </main>
+    </mat-sidenav-content>
+</mat-sidenav-container>

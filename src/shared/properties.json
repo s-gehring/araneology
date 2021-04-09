@@ -1,0 +1,11 @@
+{
+  "server": {
+    "protocol": "http",
+    "hostname": "localhost",
+    "port": 3000,
+    "api": {
+      "getAllFirmen": "/firmen",
+      "getSingleFirma": "/firmen/single"
+    }
+  }
+}

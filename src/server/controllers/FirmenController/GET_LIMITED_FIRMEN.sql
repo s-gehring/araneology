@@ -1,0 +1,1 @@
+select id, name from Firmen limit $limit offset $offset
